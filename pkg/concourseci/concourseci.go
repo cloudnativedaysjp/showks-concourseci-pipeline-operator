@@ -94,6 +94,7 @@ func (c *ConcourseCIClient) DestroyPipeline(target string, pipeline string) erro
 	args := []string{
 		"-t", target,
 		"destroy-pipeline",
+		"-n",
 		"-p", pipeline,
 	}
 	cmd := exec.Command("fly", args...)
