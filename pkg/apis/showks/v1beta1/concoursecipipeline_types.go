@@ -27,6 +27,9 @@ import (
 type ConcourseCIPipelineSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	Target   string `json:"target"`
+	Pipeline string `json:"pipeline"`
+	Manifest string `json:"manifest"`
 }
 
 // ConcourseCIPipelineStatus defines the observed state of ConcourseCIPipeline
