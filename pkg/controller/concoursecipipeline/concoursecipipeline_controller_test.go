@@ -17,13 +17,15 @@ limitations under the License.
 package concoursecipipeline
 
 import (
+	"github.com/cloudnativedaysjp/showks-concourseci-pipeline-operator/pkg/concourseci"
+	"github.com/cloudnativedaysjp/showks-concourseci-pipeline-operator/pkg/mock"
+	"github.com/golang/mock/gomock"
 	"testing"
 	"time"
 
 	showksv1beta1 "github.com/cloudnativedaysjp/showks-concourseci-pipeline-operator/pkg/apis/showks/v1beta1"
 	"github.com/onsi/gomega"
 	"golang.org/x/net/context"
-	appsv1 "k8s.io/api/apps/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -35,13 +37,48 @@ import (
 var c client.Client
 
 var expectedRequest = reconcile.Request{NamespacedName: types.NamespacedName{Name: "foo", Namespace: "default"}}
-var depKey = types.NamespacedName{Name: "foo-deployment", Namespace: "default"}
+var depKey = types.NamespacedName{Name: "foo", Namespace: "default"}
 
 const timeout = time.Second * 5
 
+var target = "testTarget"
+var pipelineName = "testPipeline"
+var manifest = `
+jobs:
+- name: hello-world
+  plan:
+  - task: say-hello
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: alpine}
+      run:
+        path: echo
+        args: ["Hello, world!"]
+`
+
+func newConcourseCIClientMock(controller *gomock.Controller) concourseci.ConcourseCIClientInterface {
+	ccClient := mock_concourseci.NewMockConcourseCIClientInterface(controller)
+	ccClient.EXPECT().SetPipeline(target, pipelineName, manifest).Return(nil).Times(2)
+	ccClient.EXPECT().DestroyPipeline(target, pipelineName).Return(nil)
+
+	return ccClient
+}
+
 func TestReconcile(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
-	instance := &showksv1beta1.ConcourseCIPipeline{ObjectMeta: metav1.ObjectMeta{Name: "foo", Namespace: "default"}}
+	instance := &showksv1beta1.ConcourseCIPipeline{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "foo",
+			Namespace: "default",
+		},
+		Spec: showksv1beta1.ConcourseCIPipelineSpec{
+			Target:   target,
+			Pipeline: pipelineName,
+			Manifest: manifest,
+		},
+	}
 
 	// Setup the Manager and Controller.  Wrap the Controller Reconcile function so it writes each request to a
 	// channel when it is finished.
@@ -49,7 +86,12 @@ func TestReconcile(t *testing.T) {
 	g.Expect(err).NotTo(gomega.HaveOccurred())
 	c = mgr.GetClient()
 
-	recFn, requests := SetupTestReconcile(newReconciler(mgr))
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	ccClient := newConcourseCIClientMock(mockCtrl)
+
+	recFn, requests := SetupTestReconcile(newReconciler(mgr, ccClient))
 	g.Expect(add(mgr, recFn)).NotTo(gomega.HaveOccurred())
 
 	stopMgr, mgrStopped := StartTestManager(mgr, g)
@@ -71,18 +113,18 @@ func TestReconcile(t *testing.T) {
 	defer c.Delete(context.TODO(), instance)
 	g.Eventually(requests, timeout).Should(gomega.Receive(gomega.Equal(expectedRequest)))
 
-	deploy := &appsv1.Deployment{}
-	g.Eventually(func() error { return c.Get(context.TODO(), depKey, deploy) }, timeout).
+	pipeline := &showksv1beta1.ConcourseCIPipeline{}
+	g.Eventually(func() error { return c.Get(context.TODO(), depKey, pipeline) }, timeout).
 		Should(gomega.Succeed())
 
 	// Delete the Deployment and expect Reconcile to be called for Deployment deletion
-	g.Expect(c.Delete(context.TODO(), deploy)).NotTo(gomega.HaveOccurred())
+	g.Expect(c.Delete(context.TODO(), pipeline)).NotTo(gomega.HaveOccurred())
 	g.Eventually(requests, timeout).Should(gomega.Receive(gomega.Equal(expectedRequest)))
-	g.Eventually(func() error { return c.Get(context.TODO(), depKey, deploy) }, timeout).
+	g.Eventually(func() error { return c.Get(context.TODO(), depKey, pipeline) }, timeout).
 		Should(gomega.Succeed())
 
 	// Manually delete Deployment since GC isn't enabled in the test control plane
-	g.Eventually(func() error { return c.Delete(context.TODO(), deploy) }, timeout).
-		Should(gomega.MatchError("deployments.apps \"foo-deployment\" not found"))
+	//g.Eventually(func() error { return c.Delete(context.TODO(), deploy) }, timeout).
+	//	Should(gomega.MatchError("deployments.apps \"foo-deployment\" not found"))
 
 }

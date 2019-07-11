@@ -11,6 +11,8 @@ spec:
     kind: ConcourseCIPipeline
     plural: concoursecipipelines
   scope: Namespaced
+  subresources:
+    status: {}
   validation:
     openAPIV3Schema:
       properties:

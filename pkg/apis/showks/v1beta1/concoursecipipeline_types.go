@@ -43,6 +43,7 @@ type ConcourseCIPipelineStatus struct {
 
 // ConcourseCIPipeline is the Schema for the concoursecipipelines API
 // +k8s:openapi-gen=true
+// +kubebuilder:subresource:status
 type ConcourseCIPipeline struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
