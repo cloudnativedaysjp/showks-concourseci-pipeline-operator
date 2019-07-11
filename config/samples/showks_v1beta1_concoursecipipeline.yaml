@@ -1,0 +1,9 @@
+apiVersion: showks.cloudnativedays.jp/v1beta1
+kind: ConcourseCIPipeline
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: concoursecipipeline-sample
+spec:
+  # Add fields here
+  foo: bar
