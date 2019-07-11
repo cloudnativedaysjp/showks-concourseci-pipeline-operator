@@ -24,6 +24,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"os"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
@@ -44,7 +45,11 @@ var finalizerName = "finalizer.concourseci.showks.cloudnativedays.jp"
 // Add creates a new ConcourseCIPipeline Controller and adds it to the Manager with default RBAC. The Manager will set fields on the Controller
 // and Start it when the Manager is Started.
 func Add(mgr manager.Manager) error {
-	return add(mgr, newReconciler(mgr, concourseci.NewClient()))
+	url := os.Getenv("CONCOURSECI_URL")
+	team := os.Getenv("CONCOURSECI_TEAM")
+	username := os.Getenv("CONCOURSECI_USERNAME")
+	password := os.Getenv("CONCOURSECI_PASSWORD")
+	return add(mgr, newReconciler(mgr, concourseci.NewClient(url, team, username, password)))
 }
 
 // newReconciler returns a new reconcile.Reconciler

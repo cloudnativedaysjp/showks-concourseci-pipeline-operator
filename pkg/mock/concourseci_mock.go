@@ -32,6 +32,20 @@ func (m *MockConcourseCIClientInterface) EXPECT() *MockConcourseCIClientInterfac
 	return m.recorder
 }
 
+// Login mocks base method
+func (m *MockConcourseCIClientInterface) Login() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Login")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Login indicates an expected call of Login
+func (mr *MockConcourseCIClientInterfaceMockRecorder) Login() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockConcourseCIClientInterface)(nil).Login))
+}
+
 // SetPipeline mocks base method
 func (m *MockConcourseCIClientInterface) SetPipeline(target, pipeline, manifest string) error {
 	m.ctrl.T.Helper()
