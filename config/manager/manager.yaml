@@ -54,6 +54,22 @@ spec:
                 fieldPath: metadata.namespace
           - name: SECRET_NAME
             value: $(WEBHOOK_SECRET_NAME)
+          - name: CONCOURSECI_URL
+            valueFrom:
+              secretKeyRef:
+                name: controller-manager
+          - name: CONCOURSECI_TEAM
+            valueFrom:
+              secretKeyRef:
+                name: controller-manager
+          - name: CONCOURSECI_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: controller-manager
+          - name: CONCOURSECI_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: controller-manager
         resources:
           limits:
             cpu: 100m
