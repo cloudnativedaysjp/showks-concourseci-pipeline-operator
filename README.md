@@ -2,7 +2,17 @@
 
 ## Install
 
+```
+$ cat ./config/secret.env
+CONCOURSECI_URL=xxxxxxxxxxz
+CONCOURSECI_TEAM=xxxxxxxxxxz
+CONCOURSECI_USERNAME=xxxxxxxxxxz
+CONCOURSECI_PASSWORD=xxxxxxxxxxz
+```
 
+```
+$ make deploy
+```
 
 ## Usage
 
