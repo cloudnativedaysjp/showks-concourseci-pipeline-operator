@@ -1,6 +1,6 @@
 
 # Image URL to use all building/pushing image targets
-IMG ?= cloudnativedays/concourseci-pipeline-operator:latest
+IMG ?= cloudnativedaysjp/concourseci-pipeline-operator:latest
 
 all: test manager
 
