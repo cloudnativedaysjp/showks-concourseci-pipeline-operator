@@ -58,18 +58,22 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: controller-manager
+                key: CONCOURSECI_URL
           - name: CONCOURSECI_TEAM
             valueFrom:
               secretKeyRef:
                 name: controller-manager
+                key: CONCOURSECI_TEAM
           - name: CONCOURSECI_USERNAME
             valueFrom:
               secretKeyRef:
                 name: controller-manager
+                key: CONCOURSECI_USERNAME
           - name: CONCOURSECI_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: controller-manager
+                key: CONCOURSECI_PASSWORD
         resources:
           limits:
             cpu: 100m
