@@ -46,10 +46,11 @@ var finalizerName = "finalizer.concourseci.showks.cloudnativedays.jp"
 // and Start it when the Manager is Started.
 func Add(mgr manager.Manager) error {
 	url := os.Getenv("CONCOURSECI_URL")
+	target := os.Getenv("CONCOURSECI_TARGET")
 	team := os.Getenv("CONCOURSECI_TEAM")
 	username := os.Getenv("CONCOURSECI_USERNAME")
 	password := os.Getenv("CONCOURSECI_PASSWORD")
-	return add(mgr, newReconciler(mgr, concourseci.NewClient(url, team, username, password)))
+	return add(mgr, newReconciler(mgr, concourseci.NewClient(url, target, team, username, password)))
 }
 
 // newReconciler returns a new reconcile.Reconciler

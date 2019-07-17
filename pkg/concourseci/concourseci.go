@@ -1,7 +1,6 @@
 package concourseci
 
 import (
-	"bytes"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -13,9 +12,10 @@ type ConcourseCIClientInterface interface {
 	DestroyPipeline(target string, pipeline string) error
 }
 
-func NewClient(url string, team string, username string, password string) ConcourseCIClientInterface {
+func NewClient(url string, target, team string, username string, password string) ConcourseCIClientInterface {
 	return &ConcourseCIClient{
 		Url:      url,
+		Target:   target,
 		Team:     team,
 		Username: username,
 		Password: password,
@@ -24,6 +24,7 @@ func NewClient(url string, team string, username string, password string) Concou
 
 type ConcourseCIClient struct {
 	Url      string
+	Target   string
 	Team     string
 	Username string
 	Password string
@@ -31,17 +32,15 @@ type ConcourseCIClient struct {
 
 func (c *ConcourseCIClient) Login() error {
 	args := []string{
-		"-t", c.Team,
+		"-t", c.Target,
 		"login",
 		"-k",
 		"-u", c.Username,
 		"-p", c.Password,
 		"-c", c.Url,
+		"-n", c.Team,
 	}
-	cmd := exec.Command("fly", args...)
-	var b bytes.Buffer
-	cmd.Stdout = &b
-	cmd.Stderr = &b
+	cmd := exec.Command("/fly", args...)
 
 	err := cmd.Run()
 	if err != nil {
@@ -72,10 +71,7 @@ func (c *ConcourseCIClient) SetPipeline(target string, pipeline string, manifest
 		"-p", pipeline,
 		"-c", tmpfile.Name(),
 	}
-	cmd := exec.Command("fly", args...)
-	var b bytes.Buffer
-	cmd.Stdout = &b
-	cmd.Stderr = &b
+	cmd := exec.Command("/fly", args...)
 
 	err = cmd.Run()
 	if err != nil {
@@ -97,10 +93,7 @@ func (c *ConcourseCIClient) DestroyPipeline(target string, pipeline string) erro
 		"-n",
 		"-p", pipeline,
 	}
-	cmd := exec.Command("fly", args...)
-	var b bytes.Buffer
-	cmd.Stdout = &b
-	cmd.Stderr = &b
+	cmd := exec.Command("/fly", args...)
 
 	err = cmd.Run()
 	if err != nil {

@@ -59,6 +59,11 @@ spec:
               secretKeyRef:
                 name: controller-manager
                 key: CONCOURSECI_URL
+          - name: CONCOURSECI_TARGET
+            valueFrom:
+              secretKeyRef:
+                name: controller-manager
+                key: CONCOURSECI_TARGET
           - name: CONCOURSECI_TEAM
             valueFrom:
               secretKeyRef:
