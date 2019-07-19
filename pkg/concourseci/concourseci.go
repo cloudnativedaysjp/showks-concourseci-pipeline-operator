@@ -13,12 +13,18 @@ type ConcourseCIClientInterface interface {
 }
 
 func NewClient(url string, target, team string, username string, password string) ConcourseCIClientInterface {
+	flyPath := "fly"
+	if os.Getenv("CONCOURSECI_FLY_PATH") != "" {
+		flyPath = os.Getenv("CONCOURSECI_FLY_PATH")
+	}
+
 	return &ConcourseCIClient{
 		Url:      url,
 		Target:   target,
 		Team:     team,
 		Username: username,
 		Password: password,
+		FlyPath: flyPath,
 	}
 }
 
@@ -28,6 +34,7 @@ type ConcourseCIClient struct {
 	Team     string
 	Username string
 	Password string
+	FlyPath string
 }
 
 func (c *ConcourseCIClient) Login() error {
@@ -40,7 +47,7 @@ func (c *ConcourseCIClient) Login() error {
 		"-c", c.Url,
 		"-n", c.Team,
 	}
-	cmd := exec.Command("/fly", args...)
+	cmd := exec.Command(c.FlyPath, args...)
 
 	err := cmd.Run()
 	if err != nil {
@@ -71,9 +78,10 @@ func (c *ConcourseCIClient) SetPipeline(target string, pipeline string, manifest
 		"-p", pipeline,
 		"-c", tmpfile.Name(),
 	}
-	cmd := exec.Command("/fly", args...)
+	cmd := exec.Command(c.FlyPath, args...)
 
 	err = cmd.Run()
+
 	if err != nil {
 		return err
 	}
@@ -93,7 +101,7 @@ func (c *ConcourseCIClient) DestroyPipeline(target string, pipeline string) erro
 		"-n",
 		"-p", pipeline,
 	}
-	cmd := exec.Command("/fly", args...)
+	cmd := exec.Command(c.FlyPath, args...)
 
 	err = cmd.Run()
 	if err != nil {
