@@ -1,6 +1,7 @@
 package concourseci
 
 import (
+	"github.com/pkg/errors"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -48,14 +49,15 @@ func (c *ConcourseCIClient) Login() error {
 		"-n", c.Team,
 	}
 	cmd := exec.Command(c.FlyPath, args...)
+	out, err := cmd.CombinedOutput()
 
-	err := cmd.Run()
 	if err != nil {
-		return err
+		return errors.Wrapf(err, "Failed to login: %s", out)
 	}
 
 	return nil
 }
+
 func (c *ConcourseCIClient) SetPipeline(target string, pipeline string, manifest string) error {
 	err := c.Login()
 	if err != nil {
@@ -79,11 +81,10 @@ func (c *ConcourseCIClient) SetPipeline(target string, pipeline string, manifest
 		"-c", tmpfile.Name(),
 	}
 	cmd := exec.Command(c.FlyPath, args...)
-
-	err = cmd.Run()
+	out, err := cmd.CombinedOutput()
 
 	if err != nil {
-		return err
+		return errors.Wrapf(err, "Failed to SetPipeline: %s", out)
 	}
 
 	return nil
@@ -102,10 +103,10 @@ func (c *ConcourseCIClient) DestroyPipeline(target string, pipeline string) erro
 		"-p", pipeline,
 	}
 	cmd := exec.Command(c.FlyPath, args...)
+	out, err := cmd.CombinedOutput()
 
-	err = cmd.Run()
 	if err != nil {
-		return err
+		return errors.Wrapf(err, "Failed to DestroyPipeline: %s", out)
 	}
 
 	return nil
