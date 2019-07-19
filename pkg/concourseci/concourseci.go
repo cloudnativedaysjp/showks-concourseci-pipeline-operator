@@ -11,6 +11,7 @@ type ConcourseCIClientInterface interface {
 	Login() error
 	SetPipeline(target string, pipeline string, manifest string) error
 	DestroyPipeline(target string, pipeline string) error
+	UnpausePipeline(target string, pipeline string) error
 }
 
 func NewClient(url string, target, team string, username string, password string) ConcourseCIClientInterface {
@@ -107,6 +108,27 @@ func (c *ConcourseCIClient) DestroyPipeline(target string, pipeline string) erro
 
 	if err != nil {
 		return errors.Wrapf(err, "Failed to DestroyPipeline: %s", out)
+	}
+
+	return nil
+}
+
+func (c *ConcourseCIClient) UnpausePipeline(target string, pipeline string) error {
+	err := c.Login()
+	if err != nil {
+		return err
+	}
+
+	args := []string{
+		"-t", target,
+		"unpause-pipeline",
+		"-p", pipeline,
+	}
+	cmd := exec.Command(c.FlyPath, args...)
+	out, err := cmd.CombinedOutput()
+
+	if err != nil {
+		return errors.Wrapf(err, "Failed to UnpausePipeline: %s", out)
 	}
 
 	return nil

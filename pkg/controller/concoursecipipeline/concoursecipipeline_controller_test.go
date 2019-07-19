@@ -61,6 +61,7 @@ jobs:
 func newConcourseCIClientMock(controller *gomock.Controller) concourseci.ConcourseCIClientInterface {
 	ccClient := mock_concourseci.NewMockConcourseCIClientInterface(controller)
 	ccClient.EXPECT().SetPipeline(target, pipelineName, manifest).Return(nil).Times(2)
+	ccClient.EXPECT().UnpausePipeline(target, pipelineName).Return(nil).Times(2)
 	ccClient.EXPECT().DestroyPipeline(target, pipelineName).Return(nil)
 
 	return ccClient

@@ -134,6 +134,11 @@ func (r *ReconcileConcourseCIPipeline) Reconcile(request reconcile.Request) (rec
 		return reconcile.Result{}, err
 	}
 
+	err = r.ccClient.UnpausePipeline(target, pipeline)
+	if err != nil {
+		return reconcile.Result{}, err
+	}
+
 	return reconcile.Result{}, nil
 }
 func (r *ReconcileConcourseCIPipeline) setFinalizer(instance *showksv1beta1.ConcourseCIPipeline) error {
