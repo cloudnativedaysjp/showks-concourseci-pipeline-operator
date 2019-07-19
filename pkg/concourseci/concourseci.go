@@ -25,7 +25,7 @@ func NewClient(url string, target, team string, username string, password string
 		Team:     team,
 		Username: username,
 		Password: password,
-		FlyPath: flyPath,
+		FlyPath:  flyPath,
 	}
 }
 
@@ -35,7 +35,7 @@ type ConcourseCIClient struct {
 	Team     string
 	Username string
 	Password string
-	FlyPath string
+	FlyPath  string
 }
 
 func (c *ConcourseCIClient) Login() error {
