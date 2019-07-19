@@ -73,3 +73,17 @@ func (mr *MockConcourseCIClientInterfaceMockRecorder) DestroyPipeline(target, pi
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DestroyPipeline", reflect.TypeOf((*MockConcourseCIClientInterface)(nil).DestroyPipeline), target, pipeline)
 }
+
+// UnpausePipeline mocks base method
+func (m *MockConcourseCIClientInterface) UnpausePipeline(target, pipeline string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UnpausePipeline", target, pipeline)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UnpausePipeline indicates an expected call of UnpausePipeline
+func (mr *MockConcourseCIClientInterfaceMockRecorder) UnpausePipeline(target, pipeline interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnpausePipeline", reflect.TypeOf((*MockConcourseCIClientInterface)(nil).UnpausePipeline), target, pipeline)
+}
