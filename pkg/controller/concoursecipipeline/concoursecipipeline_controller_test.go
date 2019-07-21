@@ -79,6 +79,7 @@ func TestReconcile(t *testing.T) {
 			Target:   target,
 			Pipeline: pipelineName,
 			Manifest: manifest,
+			Public:   true,
 		},
 	}
 
