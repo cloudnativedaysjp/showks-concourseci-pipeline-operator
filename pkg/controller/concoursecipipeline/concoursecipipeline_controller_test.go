@@ -62,6 +62,7 @@ func newConcourseCIClientMock(controller *gomock.Controller) concourseci.Concour
 	ccClient := mock_concourseci.NewMockConcourseCIClientInterface(controller)
 	ccClient.EXPECT().SetPipeline(target, pipelineName, manifest).Return(nil).Times(2)
 	ccClient.EXPECT().UnpausePipeline(target, pipelineName).Return(nil).Times(2)
+	ccClient.EXPECT().ExposePipeline(target, pipelineName).Return(nil).Times(2)
 	ccClient.EXPECT().DestroyPipeline(target, pipelineName).Return(nil)
 
 	return ccClient
@@ -78,6 +79,7 @@ func TestReconcile(t *testing.T) {
 			Target:   target,
 			Pipeline: pipelineName,
 			Manifest: manifest,
+			Public:   true,
 		},
 	}
 
