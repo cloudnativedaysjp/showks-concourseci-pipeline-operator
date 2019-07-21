@@ -26,6 +26,7 @@ metadata:
 spec:
   target: main
   pipeline: test
+  public: true
   manifest: |-
     jobs:
     - name: hello-world
