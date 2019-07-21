@@ -29,6 +29,7 @@ type ConcourseCIPipelineSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 	Target   string `json:"target"`
 	Pipeline string `json:"pipeline"`
+	Public bool `json:"public,omitempty"`
 	Manifest string `json:"manifest"`
 }
 

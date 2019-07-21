@@ -87,3 +87,17 @@ func (mr *MockConcourseCIClientInterfaceMockRecorder) UnpausePipeline(target, pi
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnpausePipeline", reflect.TypeOf((*MockConcourseCIClientInterface)(nil).UnpausePipeline), target, pipeline)
 }
+
+// ExposePipeline mocks base method
+func (m *MockConcourseCIClientInterface) ExposePipeline(target, pipeline string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExposePipeline", target, pipeline)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ExposePipeline indicates an expected call of ExposePipeline
+func (mr *MockConcourseCIClientInterfaceMockRecorder) ExposePipeline(target, pipeline interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExposePipeline", reflect.TypeOf((*MockConcourseCIClientInterface)(nil).ExposePipeline), target, pipeline)
+}
